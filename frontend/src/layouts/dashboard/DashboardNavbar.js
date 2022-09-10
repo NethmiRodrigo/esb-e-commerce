@@ -2,6 +2,9 @@ import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import Button from '@mui/material/Button';
+// import { Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 // components
 import Iconify from '../../components/Iconify';
 //
@@ -41,20 +44,36 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar({ onOpenSidebar }) {
+  // const gotoLogin = () => {
+  //   Navigate('/login');
+  // };
+
+  // const gotoSignup = () => {
+  //   Navigate('/signup');
+  // };
+
   return (
     <RootStyle>
       <ToolbarStyle>
-        <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
+        {/* <IconButton onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary', display: { lg: 'none' } }}>
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        <Searchbar />
+        <Searchbar /> */}
         <Box sx={{ flexGrow: 1 }} />
 
+        {/* side icons */}
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <LanguagePopover />
+          {/* <LanguagePopover />
           <NotificationsPopover />
-          <AccountPopover />
+          <AccountPopover /> */}
+          <Link to="/login">
+            <Button variant="contained">Login</Button>
+          </Link>
+
+          <Link to="/register" style={{ textDecoration: 'none' }}>
+            <Button variant="outlined">Signup</Button>
+          </Link>
         </Stack>
       </ToolbarStyle>
     </RootStyle>
