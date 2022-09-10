@@ -63,6 +63,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
         <Logo />
       </Box>
+
+      <Typography variant="h4" sx={{ px: 2.5, pb: 3, display: 'inline-flex', letterSpacing: 6 }}>
+        TipToe
+      </Typography>
       {/* 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
