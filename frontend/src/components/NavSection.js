@@ -44,6 +44,7 @@ function NavItem({ item, active }) {
   const [open, setOpen] = useState(isActiveRoot);
 
   const handleOpen = () => {
+    console.log(item, '   ', open);
     setOpen((prev) => !prev);
   };
 
@@ -142,8 +143,13 @@ NavSection.propTypes = {
 export default function NavSection({ navConfig, ...other }) {
   const { pathname } = useLocation();
 
-  const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
-
+  // const match = (path) => (path ? !!matchPath({ path, end: false }, pathname) : false);
+  const match = (path) => {
+    if (path === pathname) {
+      return true;
+    }
+    return false;
+  };
   return (
     <Box {...other}>
       <List disablePadding sx={{ p: 1 }}>

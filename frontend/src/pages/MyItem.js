@@ -34,17 +34,15 @@ export default function MyItem() {
           <Typography variant="h4" gutterBottom>
             My Products
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="#"
-            tartIcon={<Iconify icon="eva:plus-fill" style={{ marginRight: '50px' }} />}
-          >
-            New Post
-          </Button>
+
+          <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
+            <Button variant="contained" style={{ marginRight: '90px' }}>
+              + Add New Product
+            </Button>
+          </Stack>
         </Stack>
 
-        <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
+        {/* <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
           <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
             <ProductFilterSidebar
               isOpenFilter={openFilter}
@@ -53,7 +51,7 @@ export default function MyItem() {
             />
             <ProductSort />
           </Stack>
-        </Stack>
+        </Stack> */}
 
         <ProductList products={PRODUCTS} />
         <ProductCartWidget />
