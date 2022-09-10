@@ -1,6 +1,6 @@
 import { useState } from 'react';
 // material
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { Container, Stack, Typography, Button } from '@mui/material';
 // components
@@ -36,9 +36,11 @@ export default function MyItem() {
           </Typography>
 
           <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-            <Button variant="contained" style={{ marginRight: '90px' }}>
-              + Add New Product
-            </Button>
+            <Link to="./new-item">
+              <Button variant="contained" style={{ marginRight: '90px' }}>
+                + Add New Product
+              </Button>
+            </Link>
           </Stack>
         </Stack>
 
