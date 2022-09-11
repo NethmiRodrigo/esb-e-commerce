@@ -1,4 +1,6 @@
 // material
+import PropTypes from 'prop-types';
+
 import { styled } from '@mui/material/styles';
 import { Badge } from '@mui/material';
 // component
@@ -24,15 +26,19 @@ const RootStyle = styled('div')(({ theme }) => ({
   borderTopLeftRadius: Number(theme.shape.borderRadius) * 2,
   borderBottomLeftRadius: Number(theme.shape.borderRadius) * 2,
   transition: theme.transitions.create('opacity'),
-  '&:hover': { opacity: 0.72 }
+  '&:hover': { opacity: 0.72 },
 }));
 
 // ----------------------------------------------------------------------
 
-export default function CartWidget() {
+CartWidget.propTypes = {
+  cartValue: PropTypes.number,
+};
+
+export default function CartWidget({ cartValue }) {
   return (
     <RootStyle>
-      <Badge showZero badgeContent={0} color="error" max={99}>
+      <Badge showZero badgeContent={cartValue} color="error" max={99}>
         <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
       </Badge>
     </RootStyle>

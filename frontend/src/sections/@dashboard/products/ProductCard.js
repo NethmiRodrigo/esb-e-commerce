@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
+import { useState } from 'react';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -25,10 +26,25 @@ const ProductImgStyle = styled('img')({
 
 ShopProductCard.propTypes = {
   product: PropTypes.object,
+  setCartValue: PropTypes.any,
+  cartValue: PropTypes.number,
 };
 
-export default function ShopProductCard({ product }) {
+export default function ShopProductCard({ setCartValue, cartValue, product }) {
   const { name, cover, price, colors, status, priceSale } = product;
+
+  const [buttonState, setButtonState] = useState(true);
+  const [buttonText, setButtonText] = useState(true);
+
+  const changeBtnState = () => {
+    if (buttonState) {
+      setCartValue(cartValue + 1);
+    } else {
+      setCartValue(cartValue - 1);
+    }
+    setButtonState(!buttonState);
+    setButtonText(!buttonText);
+  };
 
   return (
     <Card>
@@ -75,7 +91,9 @@ export default function ShopProductCard({ product }) {
             {fCurrency(price)}
           </Typography>
 
-          <Button variant="outlined">Add to cart</Button>
+          <Button variant={buttonState ? 'outlined' : 'contained'} onClick={changeBtnState}>
+            {buttonState ? 'Add to cart' : 'Remove '}
+          </Button>
         </Stack>
       </Stack>
     </Card>
