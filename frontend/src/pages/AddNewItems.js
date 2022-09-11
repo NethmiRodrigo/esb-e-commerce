@@ -1,13 +1,23 @@
-import { Link as RouterLink } from 'react-router-dom';
+import * as Yup from 'yup';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
+import * as React from 'react';
+import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
-import { Card, Link, Container, Typography } from '@mui/material';
+import { Card, Link, Container, Typography, Stack, IconButton, InputAdornment } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
+import Iconify from '../components/Iconify';
 import Page from '../components/Page';
 import Logo from '../components/Logo';
+import { FormProvider, RHFTextField, RHFCheckbox } from '../components/hook-form';
+
 // sections
 import { LoginForm } from '../sections/auth/login';
 
@@ -60,6 +70,35 @@ export function AddNewItems() {
   const smUp = useResponsive('up', 'sm');
 
   const mdUp = useResponsive('up', 'md');
+
+  const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const LoginSchema = Yup.object().shape({
+    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    password: Yup.string().required('Password is required'),
+  });
+
+  const defaultValues = {
+    Item_name: '',
+    Item_price: '',
+    remember: true,
+  };
+
+  const methods = useForm({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  });
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  const onSubmit = async () => {
+    navigate('/dashboard', { replace: true });
+  };
   return (
     <Page title="Login">
       <RootStyle>
@@ -75,30 +114,18 @@ export function AddNewItems() {
 
             <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>
 
-            {/* <LoginForm /> */}
-
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3} sx={{ mb: 4 }}>
-                <RHFTextField name="email" label="Email address" />
-
-                <RHFTextField
-                  name="password"
-                  label="Password"
-                  type={showPassword ? 'text' : 'password'}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                          <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <RHFTextField name="Item_name" label="Item name" />
+                <RHFTextField name="Item_price" label="Item price" />
+                <Button variant="outlined" component="label">
+                  upload item image
+                  <input hidden accept="image/*" multiple type="file" />
+                </Button>
               </Stack>
 
               <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-                Login
+                Add product
               </LoadingButton>
             </FormProvider>
           </ContentStyle>
