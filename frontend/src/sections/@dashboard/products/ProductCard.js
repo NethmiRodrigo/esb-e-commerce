@@ -3,6 +3,8 @@ import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Box, Card, Link, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 // components
@@ -31,7 +33,7 @@ export default function ShopProductCard({ product }) {
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {status && (
+        {/* {status && (
           <Label
             variant="filled"
             color={(status === 'sale' && 'error') || 'info'}
@@ -45,7 +47,7 @@ export default function ShopProductCard({ product }) {
           >
             {status}
           </Label>
-        )}
+        )} */}
         <ProductImgStyle alt={name} src={cover} />
       </Box>
 
@@ -57,9 +59,9 @@ export default function ShopProductCard({ product }) {
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <ColorPreview colors={colors} />
+          {/* <ColorPreview colors={colors} /> */}
           <Typography variant="subtitle1">
-            <Typography
+            {/* <Typography
               component="span"
               variant="body1"
               sx={{
@@ -68,10 +70,12 @@ export default function ShopProductCard({ product }) {
               }}
             >
               {priceSale && fCurrency(priceSale)}
-            </Typography>
+            </Typography> */}
             &nbsp;
             {fCurrency(price)}
           </Typography>
+
+          <Button variant="outlined">Add to cart</Button>
         </Stack>
       </Stack>
     </Card>

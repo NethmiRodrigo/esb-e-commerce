@@ -10,21 +10,28 @@ import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
+import MyItem from './pages/MyItem';
+import { AddNewItems } from './pages/AddNewItems';
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
     {
-      path: '/dashboard',
+      path: '/',
       element: <DashboardLayout />,
       children: [
-        { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
-        { path: 'products', element: <Products /> },
-        { path: 'blog', element: <Blog /> },
+        { path: '', element: <Products /> },
+        // { path: 'user', element: <User /> },
+        // { path: 'products', element: <Products /> },
+        { path: 'my-item', element: <MyItem /> },
       ],
     },
+    {
+      path: '/my-item/new-item',
+      element: <AddNewItems />,
+    },
+
     {
       path: 'login',
       element: <Login />,
@@ -37,7 +44,7 @@ export default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
+        { path: '/', element: <Navigate to="/" /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
