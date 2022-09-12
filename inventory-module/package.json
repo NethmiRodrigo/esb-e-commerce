@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "express": "^4.18.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.19"
+  },
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "name": "inventory-module",
+  "version": "1.0.0",
+  "description": "API to manage inventory",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NethmiRodrigo/esb-e-commerce.git"
+  },
+  "author": "NethmiRodrigo & IsuruNish",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NethmiRodrigo/esb-e-commerce/issues"
+  },
+  "homepage": "https://github.com/NethmiRodrigo/esb-e-commerce#readme"
+}
