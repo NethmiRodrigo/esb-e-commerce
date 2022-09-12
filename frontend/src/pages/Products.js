@@ -12,6 +12,8 @@ import PRODUCTS from '../_mock/products';
 export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
 
+  const [cartValue, setCartValue] = useState(0);
+
   const handleOpenFilter = () => {
     setOpenFilter(true);
   };
@@ -38,8 +40,8 @@ export default function EcommerceShop() {
           </Stack>
         </Stack> */}
 
-        <ProductList products={PRODUCTS} />
-        <ProductCartWidget />
+        <ProductList setCartValue={setCartValue} cartValue={cartValue} products={PRODUCTS} />
+        <ProductCartWidget cartValue={cartValue} />
       </Container>
     </Page>
   );
