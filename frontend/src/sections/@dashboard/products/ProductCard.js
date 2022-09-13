@@ -9,8 +9,6 @@ import Button from '@mui/material/Button';
 // utils
 import { fCurrency } from '../../../utils/formatNumber';
 // components
-import Label from '../../../components/Label';
-import { ColorPreview } from '../../../components/color-utils';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +16,7 @@ const ProductImgStyle = styled('img')({
   top: 0,
   width: '100%',
   height: '100%',
-  objectFit: 'cover',
+  objectFit: 'contain',
   position: 'absolute',
 });
 
@@ -31,7 +29,7 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ setCartValue, cartValue, product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  const { name, imgURI, price } = product;
 
   const [buttonState, setButtonState] = useState(true);
   const [buttonText, setButtonText] = useState(true);
@@ -49,22 +47,7 @@ export default function ShopProductCard({ setCartValue, cartValue, product }) {
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        {/* {status && (
-          <Label
-            variant="filled"
-            color={(status === 'sale' && 'error') || 'info'}
-            sx={{
-              zIndex: 9,
-              top: 16,
-              right: 16,
-              position: 'absolute',
-              textTransform: 'uppercase',
-            }}
-          >
-            {status}
-          </Label>
-        )} */}
-        <ProductImgStyle alt={name} src={cover} />
+        <ProductImgStyle alt={name} src={imgURI} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -75,18 +58,7 @@ export default function ShopProductCard({ setCartValue, cartValue, product }) {
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          {/* <ColorPreview colors={colors} /> */}
           <Typography variant="subtitle1">
-            {/* <Typography
-              component="span"
-              variant="body1"
-              sx={{
-                color: 'text.disabled',
-                textDecoration: 'line-through',
-              }}
-            >
-              {priceSale && fCurrency(priceSale)}
-            </Typography> */}
             &nbsp;
             {fCurrency(price)}
           </Typography>

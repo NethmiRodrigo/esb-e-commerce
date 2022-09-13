@@ -1,26 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 // material
-import { Container, Stack, Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
-import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
-// mock
-import PRODUCTS from '../_mock/products';
+import { ProductList, ProductCartWidget } from '../sections/@dashboard/products';
 
 // ----------------------------------------------------------------------
 
 export default function EcommerceShop() {
-  const [openFilter, setOpenFilter] = useState(false);
+  const [products, setProducts] = useState([]);
+
+  const fetchProducts = async () => {
+    try {
+      const result = await axios.get('http://localhost:5000/products');
+      console.log(result.data);
+      setProducts(result.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const [cartValue, setCartValue] = useState(0);
-
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
-
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
 
   return (
     <Page title="Dashboard: Products">
@@ -29,18 +34,7 @@ export default function EcommerceShop() {
           Products
         </Typography>
 
-        {/* <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <ProductFilterSidebar
-              isOpenFilter={openFilter}
-              onOpenFilter={handleOpenFilter}
-              onCloseFilter={handleCloseFilter}
-            />
-            <ProductSort />
-          </Stack>
-        </Stack> */}
-
-        <ProductList setCartValue={setCartValue} cartValue={cartValue} products={PRODUCTS} />
+        <ProductList setCartValue={setCartValue} cartValue={cartValue} products={products} />
         <ProductCartWidget cartValue={cartValue} />
       </Container>
     </Page>

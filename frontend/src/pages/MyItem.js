@@ -12,33 +12,17 @@ import { LoadingButton } from '@mui/lab';
 import { Container, Stack, Typography, Button, Grid, Card, Box, Link } from '@mui/material';
 // components
 import { styled } from '@mui/material/styles';
-import useResponsive from '../hooks/useResponsive';
 
-import { FormProvider, RHFTextField, RHFCheckbox } from '../components/hook-form';
+import { FormProvider, RHFTextField } from '../components/hook-form';
 import Page from '../components/Page';
-import { ProductSort, ProductList, ProductCartWidget, ProductFilterSidebar } from '../sections/@dashboard/products';
+
 // mock
 import PRODUCTS from '../_mock/products';
-import Iconify from '../components/Iconify';
-
-// material
 
 // utils
 import { fCurrency } from '../utils/formatNumber';
 
-// ----------------------------------------------------------------------
-
 export default function MyItem() {
-  const [openFilter, setOpenFilter] = useState(false);
-
-  // const handleOpenFilter = () => {
-  //   setOpenFilter(true);
-  // };
-
-  // const handleCloseFilter = () => {
-  //   setOpenFilter(false);
-  // };
-
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -47,10 +31,6 @@ export default function MyItem() {
     <Page title="Dashboard: Products">
       <Container>
         <BasicModal open={open} handleClose={handleClose} type={2} />
-
-        {/* <Typography variant="h4" sx={{ mb: 5 }}>
-         
-        </Typography> */}
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -64,19 +44,7 @@ export default function MyItem() {
           </Stack>
         </Stack>
 
-        {/* <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <ProductFilterSidebar
-              isOpenFilter={openFilter}
-              onOpenFilter={handleOpenFilter}
-              onCloseFilter={handleCloseFilter}
-            />
-            <ProductSort />
-          </Stack>
-        </Stack> */}
-
         <MyProductList products={PRODUCTS} />
-        {/* <ProductCartWidget /> */}
       </Container>
     </Page>
   );
@@ -117,21 +85,12 @@ MyShopProductCard.propTypes = {
 };
 
 function MyShopProductCard({ setCartValue, cartValue, product }) {
-  const { name, cover, price, colors, status, priceSale } = product;
+  const { name, cover, price } = product;
 
   const [buttonState, setButtonState] = useState(true);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  // const changeBtnState = () => {
-  //   if (buttonState) {
-  //     setCartValue(cartValue + 1);
-  //   } else {
-  //     setCartValue(cartValue - 1);
-  //   }
-  //   setButtonState(!buttonState);
-  // };
 
   return (
     <Card>
@@ -152,7 +111,6 @@ function MyShopProductCard({ setCartValue, cartValue, product }) {
             &nbsp;
             {fCurrency(price)}
           </Typography>
-          {/* <ItemInfo /> */}
           <Button variant={buttonState ? 'outlined' : 'contained'} onClick={handleOpen}>
             Edit
           </Button>
@@ -168,20 +126,18 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 800,
+  height: 600,
   bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
+  borderRadius: '2%',
 };
 
 const ContentStyle = styled('div')(({ theme }) => ({
   maxWidth: 880,
   margin: 'auto',
-  minHeight: '80vh',
+  minHeight: '65vh',
   display: 'flex',
   justifyContent: 'center',
   flexDirection: 'column',
-  padding: theme.spacing(12, 0),
 }));
 
 BasicModal.propTypes = {
