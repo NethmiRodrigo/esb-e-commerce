@@ -1,36 +1,29 @@
 const express = require("express");
-const http = require("http");
-const {
-  createDatabaseConnection,
-  destroy,
-} = require("./src/database-connection");
-
-const { addProduct } = require("./src/routes");
-
-const { catchErrors } = require("./src/util");
-
+const morgan = require("morgan");
+const productsRoute = require("./routes/product-routes");
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-
-app.get("/", (_, res) =>
-  res.send("Inventory management module is up and running")
+app.use(morgan("dev"));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
 );
-app.post("/product/add", addProduct);
 
-app.use(catchErrors);
+app.get("/", (_, res) => {
+  res.json("Inventory module is up and running");
+});
+app.use("/products", productsRoute);
 
-const server = http.createServer(app);
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  console.error(err.message, err.stack);
+  res.status(statusCode).json({ message: err.message });
+  return;
+});
 
-server.listen(port, () => {
-  try {
-    createDatabaseConnection();
-  } catch (error) {
-    console.error(error);
-    destroy();
-  }
-  console.log(
-    "Inventory management module is running on http://localhost:3000"
-  );
+app.listen(port, () => {
+  console.log(`Inventory module is running on http://localhost:${port}`);
 });
