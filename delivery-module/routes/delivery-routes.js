@@ -14,7 +14,7 @@ router.post("/", async (req, res, next) => {
       deliveryPrice: parseFloat(deliveryPrice),
     };
 
-    const result = await create(delivery);
+    const result = { data: "500" };
     res.json(result);
   } catch (err) {
     console.error(`Error while creating a delivery item`, err.message);
