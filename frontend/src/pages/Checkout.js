@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { Divider } from '@mui/material';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import './styles/divider.css';
 
 function Checkout() {
+  const [text1, setText1] = useState('');
+  const [text2, setText2] = useState('');
+  const [text3, setText3] = useState('');
+
+  const [disable, setDisable] = useState(false);
+
+  const checkSave = () => {
+    if (text1 !== '' && text2 !== '' && text3 !== '') {
+      alert('ej');
+    }
+  };
+
   return (
     <div>
       <Grid container>
@@ -13,43 +33,164 @@ function Checkout() {
             <h3>Delivery Details</h3>
           </Grid>
           <Grid item xs={6}>
-            <TextField id="outlined-basic" label="First Name" variant="outlined" sx={{ width: '280px', mb: 3 }} />
+            <TextField
+              id="outlined-basic"
+              label="First Name"
+              variant="outlined"
+              sx={{ width: '280px' }}
+              value={text1}
+              onChange={(e) => setText1(e.target.value)}
+              required
+            />
           </Grid>
 
           <Grid item xs={6}>
-            <TextField id="outlined-basic" label="Last Name" variant="outlined" sx={{ width: '280px', mb: 3 }} />
+            <TextField
+              id="outlined-basic"
+              label="Last Name"
+              variant="outlined"
+              sx={{ width: '280px' }}
+              value={text2}
+              onChange={(e) => setText2(e.target.value)}
+              required
+            />
           </Grid>
 
           <Grid item xs={12}>
-            <TextField id="outlined-basic" label="Address" variant="outlined" sx={{ width: '590px', mb: 3 }} />
+            <TextField
+              id="outlined-basic"
+              label="Address"
+              variant="outlined"
+              sx={{ width: '590px' }}
+              value={text3}
+              onChange={(e) => setText3(e.target.value)}
+              required
+            />
           </Grid>
 
-          <Button variant="contained" sx={{ width: '100px', height: '40px' }}>
+          <Button variant="contained" sx={{ width: '100px', height: '40px' }} onClick={checkSave}>
             Save
           </Button>
         </Grid>
 
-        <Divider sx={{ mt: 2, mb: 2 }} />
+        {/* <Divider sx={{ mt: 2, mb: 2 }} orientation="vertical" /> */}
+        <Divider orientation="vertical" flexItem sx={{ ml: 2 }} />
 
-        <Grid item xs={4} sx={{ ml: 5 }}>
+        <Grid container item xs={4} sx={{ ml: 5 }}>
           <Grid item xs={12} sx={{ mb: 2 }}>
             <h3>Fee Details</h3>
           </Grid>
-          <Divider sx={{ mt: 2, mb: 2 }} />
+          {/* <Divider sx={{ mt: 2, mb: 2, color: 'red' }} /> */}
 
-          <Grid item xs={12}>
-            <TextField id="outlined-basic" label="Sub total" variant="outlined" sx={{ width: '440px', mb: 3 }} />
+          <Grid item xs={6}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                  m: 1,
+                  width: 300,
+                  height: 40,
+                },
+              }}
+            >
+              <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
+                Sub total
+              </Paper>
+            </Box>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                  m: 1,
+                  width: 200,
+                  height: 40,
+                },
+              }}
+            >
+              <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
+                {}
+              </Paper>
+            </Box>
           </Grid>
 
           <Grid item xs={6}>
-            <TextField id="outlined-basic" label="Delivery charges" variant="outlined" sx={{ width: '440px', mb: 3 }} />
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                  m: 1,
+                  width: 300,
+                  height: 40,
+                },
+              }}
+            >
+              <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
+                Delivery Fee
+              </Paper>
+            </Box>
           </Grid>
 
-          <Grid item xs={12}>
-            <TextField id="outlined-basic" label="Total fee" variant="outlined" sx={{ width: '440px', mb: 3 }} />
+          <Grid item xs={4}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                  m: 1,
+                  width: 200,
+                  height: 40,
+                },
+              }}
+            >
+              <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
+                {}
+              </Paper>
+            </Box>
           </Grid>
 
-          <Button variant="contained" sx={{ width: '440px' }}>
+          <Grid item xs={6}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                  m: 1,
+                  width: 300,
+                  height: 40,
+                },
+              }}
+            >
+              <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
+                Total fee
+              </Paper>
+            </Box>
+          </Grid>
+
+          <Grid item xs={4}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                  m: 1,
+                  width: 200,
+                  height: 40,
+                },
+              }}
+            >
+              <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
+                {}
+              </Paper>
+            </Box>
+          </Grid>
+
+          <Button variant="contained" sx={{ width: '440px', mt: 3 }}>
             Place Order
           </Button>
         </Grid>
@@ -59,13 +200,16 @@ function Checkout() {
             <h3>Payment Method</h3>
           </Grid>
 
-          <Grid item xs={12}>
-            <TextField id="outlined-basic" label="Sub total" variant="outlined" sx={{ width: '440px', mb: 3 }} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <TextField id="outlined-basic" label="Delivery charges" variant="outlined" sx={{ width: '440px', mb: 3 }} />
-          </Grid>
+          <FormControl>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="female"
+              name="radio-buttons-group"
+            >
+              <FormControlLabel value="female" control={<Radio />} label="Pay with card" />
+              <FormControlLabel value="male" control={<Radio />} label="Pay by mobile" />
+            </RadioGroup>
+          </FormControl>
         </Grid>
       </Grid>
     </div>
