@@ -4,17 +4,17 @@ const router = express.Router();
 
 router.post("/", async (req, res, next) => {
   try {
-    const { customerName, customerID, address, items, deliveryPrice } = req.body;
+    const { customerID, customerFirstName, customerLastName, address, deliveryPrice } = req.body;
 
     const delivery = {
-      customerName,
       customerID,
+      customerFirstName,
+      customerLastName,
       address,
-      items,
       deliveryPrice: parseFloat(deliveryPrice),
     };
 
-    const result = { data: "500" };
+    const result = { deliveryPrice: "500" };
     res.json(result);
   } catch (err) {
     console.error(`Error while creating a delivery item`, err.message);

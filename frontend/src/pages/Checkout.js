@@ -12,16 +12,34 @@ import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import './styles/divider.css';
 
+import axios from 'axios';
+
 function Checkout() {
   const [text1, setText1] = useState('');
   const [text2, setText2] = useState('');
   const [text3, setText3] = useState('');
 
-  const [disable, setDisable] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
 
-  const checkSave = () => {
+  const [subTot, setSubTot] = useState();
+  const [deliveryFee, setDeliveryFee] = useState();
+  const [tooFee, setTooFee] = useState();
+
+  const [saveClicked, setSaveClicked] = useState(true);
+  const [paymentSelected, setPaymentSelected] = useState(true);
+
+  const checkSave = async () => {
     if (text1 !== '' && text2 !== '' && text3 !== '') {
-      alert('ej');
+      try {
+        const result = await axios.post('http://localhost:5000/delivery-items');
+        console.log(result.data);
+        setDeliveryFee(result.data.deliveryPrice);
+
+        setSaveClicked(false);
+        // setProducts(result.data);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -149,7 +167,7 @@ function Checkout() {
               }}
             >
               <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
-                {}
+                {deliveryFee}
               </Paper>
             </Box>
           </Grid>
@@ -185,12 +203,12 @@ function Checkout() {
               }}
             >
               <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
-                {}
+                {deliveryFee}
               </Paper>
             </Box>
           </Grid>
 
-          <Button variant="contained" sx={{ width: '440px', mt: 3 }}>
+          <Button variant="contained" sx={{ width: '440px', mt: 3 }} disabled={saveClicked || paymentSelected}>
             Place Order
           </Button>
         </Grid>
@@ -201,13 +219,25 @@ function Checkout() {
           </Grid>
 
           <FormControl>
-            <RadioGroup
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="female"
-              name="radio-buttons-group"
-            >
-              <FormControlLabel value="female" control={<Radio />} label="Pay with card" />
-              <FormControlLabel value="male" control={<Radio />} label="Pay by mobile" />
+            <RadioGroup aria-labelledby="demo-radio-buttons-group-label" name="radio-buttons-group">
+              <FormControlLabel
+                value="card"
+                onChange={() => {
+                  setPaymentMethod('card');
+                  setPaymentSelected(false);
+                }}
+                control={<Radio />}
+                label="Pay with card"
+              />
+              <FormControlLabel
+                value="mobile"
+                onChange={() => {
+                  setPaymentMethod('mobile');
+                  setPaymentSelected(false);
+                }}
+                control={<Radio />}
+                label="Pay by mobile"
+              />
             </RadioGroup>
           </FormControl>
         </Grid>

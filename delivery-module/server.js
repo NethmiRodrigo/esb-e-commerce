@@ -17,6 +17,7 @@ app.use(
 app.get("/", (_, res) => {
   res.json("Delivery module is up and running");
 });
+
 app.use("/delivery-items", deliveryRoute);
 
 app.use((err, req, res, next) => {
