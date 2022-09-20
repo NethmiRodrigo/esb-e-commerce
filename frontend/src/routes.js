@@ -12,6 +12,7 @@ import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import MyItem from './pages/MyItem';
 import { AddNewItems } from './pages/AddNewItems';
+import Checkout from './pages/Checkout';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: '', element: <Products /> },
+        { path: '/checkout', element: <Checkout /> },
         // { path: 'user', element: <User /> },
         // { path: 'products', element: <Products /> },
         { path: 'my-item', element: <MyItem /> },

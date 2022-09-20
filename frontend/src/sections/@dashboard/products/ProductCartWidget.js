@@ -33,11 +33,12 @@ const RootStyle = styled('div')(({ theme }) => ({
 
 CartWidget.propTypes = {
   cartValue: PropTypes.number,
+  proceedToCheckout: PropTypes.any,
 };
 
-export default function CartWidget({ cartValue }) {
+export default function CartWidget({ cartValue, proceedToCheckout }) {
   return (
-    <RootStyle>
+    <RootStyle onClick={proceedToCheckout}>
       <Badge showZero badgeContent={cartValue} color="error" max={99}>
         <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
       </Badge>

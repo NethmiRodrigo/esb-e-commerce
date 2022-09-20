@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 // material
 import { Container, Typography } from '@mui/material';
 // components
@@ -25,6 +27,11 @@ export default function EcommerceShop() {
   }, []);
 
   const [cartValue, setCartValue] = useState(0);
+  const navigate = useNavigate();
+
+  const proceedToCheckout = () => {
+    navigate('/checkout');
+  };
 
   return (
     <Page title="Dashboard: Products">
@@ -34,7 +41,7 @@ export default function EcommerceShop() {
         </Typography>
 
         <ProductList setCartValue={setCartValue} cartValue={cartValue} products={products} />
-        <ProductCartWidget cartValue={cartValue} />
+        <ProductCartWidget cartValue={cartValue} proceedToCheckout={proceedToCheckout} />
       </Container>
     </Page>
   );
