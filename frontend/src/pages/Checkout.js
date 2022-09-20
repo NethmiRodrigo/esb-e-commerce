@@ -31,19 +31,28 @@ function Checkout() {
   const checkSave = async () => {
     if (text1 !== '' && text2 !== '' && text3 !== '') {
       try {
-        const result = await axios.post('http://localhost:5000/delivery-items');
+        const result = await axios.get('http://localhost:5000/delivery-items');
         console.log(result.data);
         setDeliveryFee(result.data.deliveryPrice);
 
         setSaveClicked(false);
-        // setProducts(result.data);
       } catch (error) {
         console.error(error);
       }
     }
   };
 
-  const orderPlaced = () => {};
+  const orderPlaced = async () => {
+    try {
+      const result = await axios.post('http://localhost:5000/buyer-items');
+      console.log(result.data);
+      // setDeliveryFee(result.data.deliveryPrice);
+      console.log(result);
+      // setSaveClicked(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div>
