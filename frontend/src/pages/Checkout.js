@@ -43,6 +43,8 @@ function Checkout() {
     }
   };
 
+  const orderPlaced = () => {};
+
   return (
     <div>
       <Grid container>
@@ -208,7 +210,12 @@ function Checkout() {
             </Box>
           </Grid>
 
-          <Button variant="contained" sx={{ width: '440px', mt: 3 }} disabled={saveClicked || paymentSelected}>
+          <Button
+            variant="contained"
+            sx={{ width: '335px', mt: 3 }}
+            disabled={saveClicked || paymentSelected}
+            onClick={orderPlaced}
+          >
             Place Order
           </Button>
         </Grid>

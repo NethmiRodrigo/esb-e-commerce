@@ -2,8 +2,8 @@ const db = require("./db");
 const e = require("express");
 
 const create = async (deliveryItem) => {
-  const query = `INSERT INTO details (customerName, customerID, address, items, deliveryPrice) 
-  VALUES ('${deliveryItem.customerName}', '${deliveryItem.customerID}', '${deliveryItem.address}', '${deliveryItem.items}', 500 })`;
+  const query = `INSERT INTO details (customerFirstName, customerLastName, address, totalFee, deliveryPrice) 
+  VALUES ('${deliveryItem.customerFirstName}', '${deliveryItem.customerLastName}', '${deliveryItem.address}', '${deliveryItem.totalFee}', 500 })`;
 
   const result = await db.query(query);
 
