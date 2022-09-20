@@ -44,11 +44,14 @@ function Checkout() {
 
   const orderPlaced = async () => {
     try {
-      const result = await axios.post('http://localhost:5000/buyer-items');
-      console.log(result.data);
-      // setDeliveryFee(result.data.deliveryPrice);
-      console.log(result);
-      // setSaveClicked(false);
+      const payload = {
+        customerFirstName: text1,
+        customerLastName: text2,
+        address: text3,
+        deliveryPrice: deliveryFee,
+        totalFee: 1500,
+      };
+      const result = await axios.post('http://localhost:5001/buyer-items', payload);
     } catch (error) {
       console.error(error);
     }
