@@ -64,9 +64,9 @@ function Checkout() {
       localStorage.setItem('buyer-data', JSON.stringify(payload));
 
       if (paymentMethod === 'card') {
-        navigate('./card-payment');
+        navigate('/card-payment');
       } else {
-        navigate('./mobile-payment');
+        navigate('/mobile-payment');
       }
     } catch (error) {
       console.error(error);
