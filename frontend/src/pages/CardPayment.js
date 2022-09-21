@@ -23,22 +23,18 @@ export function CardPayment() {
   const [text3, setText3] = useState('');
   const [text4, setText4] = useState('');
 
-  const [makePayment, setakePayment] = useState(true);
-
   const navigate = useNavigate();
 
-  // have to pass item IDs
-  const orderPlaced = async () => {
+  const makePayment = async () => {
     try {
       const payload = {
         cardName: text1,
         cardNumber: text2,
         ExpDate: text3,
         CVN: text4,
+        Fee: 15000,
       };
-      const result = await axios.post('http://localhost:5001/buyer-items', payload);
-
-      localStorage.setItem('buyer-data', JSON.stringify(payload));
+      const result = await axios.post('http://localhost:5002/Payment', payload);
 
       navigate('/');
     } catch (error) {
