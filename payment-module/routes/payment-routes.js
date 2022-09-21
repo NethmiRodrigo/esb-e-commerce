@@ -3,7 +3,17 @@ const router = express.Router();
 
 router.post("/", async (req, res, next) => {
   try {
-    const { customerName, customerID, address, items, deliveryPrice } = req.body;
+    const { cardName, cardNumber, ExpDate, CVN, Fee } = req.body;
+
+    const payload = {
+      cardName: cardName,
+      cardNumber: cardNumber,
+      ExpDate: ExpDate,
+      CVN: CVN,
+      Fee: Fee,
+    };
+
+    console.log(payload);
 
     const result = { data: "Payment Successful" };
 

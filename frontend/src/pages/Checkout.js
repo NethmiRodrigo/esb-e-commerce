@@ -10,6 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
+
 import './styles/divider.css';
 
 import axios from 'axios';
@@ -28,18 +30,46 @@ function Checkout() {
   const [saveClicked, setSaveClicked] = useState(true);
   const [paymentSelected, setPaymentSelected] = useState(true);
 
+  const navigate = useNavigate();
+
+  const proceedToCheckout = () => {};
+
   const checkSave = async () => {
     if (text1 !== '' && text2 !== '' && text3 !== '') {
       try {
-        const result = await axios.post('http://localhost:5000/delivery-items');
+        const result = await axios.get('http://localhost:5000/delivery-items');
         console.log(result.data);
         setDeliveryFee(result.data.deliveryPrice);
 
         setSaveClicked(false);
-        // setProducts(result.data);
       } catch (error) {
         console.error(error);
       }
+    }
+  };
+
+  // have to pass item IDs
+  const orderPlaced = async () => {
+    try {
+      const payload = {
+        customerFirstName: text1,
+        customerLastName: text2,
+        address: text3,
+        deliveryPrice: deliveryFee,
+        totalFee: 1500,
+        items: [1, 2, 3],
+      };
+      const result = await axios.post('http://localhost:5001/buyer-items', payload);
+
+      localStorage.setItem('buyer-data', JSON.stringify(payload));
+
+      if (paymentMethod === 'card') {
+        navigate('/card-payment');
+      } else {
+        navigate('/mobile-payment');
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -208,7 +238,12 @@ function Checkout() {
             </Box>
           </Grid>
 
-          <Button variant="contained" sx={{ width: '440px', mt: 3 }} disabled={saveClicked || paymentSelected}>
+          <Button
+            variant="contained"
+            sx={{ width: '335px', mt: 3 }}
+            disabled={saveClicked || paymentSelected}
+            onClick={orderPlaced}
+          >
             Place Order
           </Button>
         </Grid>
