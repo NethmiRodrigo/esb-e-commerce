@@ -12,7 +12,9 @@ import Products from './pages/Products';
 import DashboardApp from './pages/DashboardApp';
 import MyItem from './pages/MyItem';
 import { AddNewItems } from './pages/AddNewItems';
-
+import { CardPayment } from './pages/CardPayment';
+import { MobilePayment } from './pages/MobilePayment';
+import Checkout from './pages/Checkout';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -22,6 +24,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: '', element: <Products /> },
+        { path: '/checkout', element: <Checkout /> },
         // { path: 'user', element: <User /> },
         // { path: 'products', element: <Products /> },
         { path: 'my-item', element: <MyItem /> },
@@ -30,6 +33,16 @@ export default function Router() {
     {
       path: '/my-item/new-item',
       element: <AddNewItems />,
+    },
+
+    {
+      path: '/checkout/card-payment',
+      element: <CardPayment />,
+    },
+
+    {
+      path: '/checkout/mobile-payment',
+      element: <MobilePayment />,
     },
 
     {
