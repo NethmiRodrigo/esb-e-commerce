@@ -22,12 +22,17 @@ export default function EcommerceShop() {
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
   const [cartValue, setCartValue] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let cart = sessionStorage.getItem('cart');
+    if (cart) {
+      cart = JSON.parse(cart);
+      setCartValue(cart.length);
+    }
+    fetchProducts();
+  }, []);
 
   const addToCart = (product, mode = 'add') => {
     let cart = sessionStorage.getItem('cart');
