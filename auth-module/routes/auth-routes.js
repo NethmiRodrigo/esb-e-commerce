@@ -5,6 +5,10 @@ const { getOne, create } = require("../services/user");
 const { jwtKey } = require("../config/config");
 const router = express.Router();
 
+const createToken = (user) => {
+  return jwt.sign({ user }, jwtKey);
+};
+
 router.post("/register", async (req, res, next) => {
   const { email, password, confirmPassword, name, role } = req.body;
   if (password !== confirmPassword)
@@ -33,8 +37,8 @@ router.post("/login", async (req, res, next) => {
     const passwordIsCorrect = await bcrypt.compare(password, user[0].password);
     if (!passwordIsCorrect)
       return res.status(400).json("Incorrect credentials");
-    const token = jwt.sign({ user: user[0] }, jwtKey);
     delete user[0].password;
+    const token = createToken(user[0]);
     return res.status(200).json({ user: user[0], token });
   } catch (error) {
     return res.status(500).json(error);
