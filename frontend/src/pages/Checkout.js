@@ -1,44 +1,56 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import { Divider } from '@mui/material';
+import {
+  Table,
+  Stack,
+  Paper,
+  Avatar,
+  Button,
+  TableRow,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  Divider,
+} from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
 
 import './styles/divider.css';
-
-import axios from 'axios';
+import { fCurrency } from 'src/utils/formatNumber';
 
 function Checkout() {
   const [text1, setText1] = useState('');
   const [text2, setText2] = useState('');
   const [text3, setText3] = useState('');
+  const [products, setProducts] = useState([]);
 
   const [paymentMethod, setPaymentMethod] = useState('');
-
-  const [subTot, setSubTot] = useState();
   const [deliveryFee, setDeliveryFee] = useState();
-  const [tooFee, setTooFee] = useState();
 
   const [saveClicked, setSaveClicked] = useState(true);
   const [paymentSelected, setPaymentSelected] = useState(true);
 
   const navigate = useNavigate();
 
-  const proceedToCheckout = () => {};
+  useEffect(() => {
+    let cart = sessionStorage.getItem('cart');
+    if (cart) {
+      cart = JSON.parse(cart);
+      setProducts(cart);
+    }
+  }, []);
 
   const checkSave = async () => {
     if (text1 !== '' && text2 !== '' && text3 !== '') {
       try {
         const result = await axios.get('http://localhost:5000/delivery-items');
-        console.log(result.data);
         setDeliveryFee(result.data.deliveryPrice);
 
         setSaveClicked(false);
@@ -59,7 +71,7 @@ function Checkout() {
         totalFee: 1500,
         items: [1, 2, 3],
       };
-      const result = await axios.post('http://localhost:5001/buyer-items', payload);
+      await axios.post('http://localhost:5001/buyer-items', payload);
 
       localStorage.setItem('buyer-data', JSON.stringify(payload));
 
@@ -73,11 +85,59 @@ function Checkout() {
     }
   };
 
+  const removeItem = (product) => {
+    let cart = [...products];
+    cart.splice(
+      cart.findIndex((item) => item.id === product.id),
+      1
+    );
+    setProducts(cart);
+    sessionStorage.setItem('cart', cart);
+  };
+
   return (
     <div>
       <Grid container>
         <Grid container item xs={6}>
-          <Grid item xs={12}>
+          {products.length > 0 && (
+            <>
+              <h3>Your Cart</h3>
+              <TableContainer sx={{ minWidth: 800 }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="right"></TableCell>
+                      <TableCell>Product Name</TableCell>
+                      <TableCell>Price</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {products.map((product) => (
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          <Avatar
+                            alt={product.imgURI}
+                            src={product.imgURI}
+                            sx={{ width: 100, height: 100 }}
+                            variant="rounded"
+                          />
+                        </TableCell>
+                        <TableCell>{product.name}</TableCell>
+                        <TableCell>{fCurrency(product.price)}</TableCell>
+                        <TableCell>
+                          <Button variant="outlined" color="error" onClick={() => removeItem(product)}>
+                            Remove
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+          )}
+          <Grid item xs={12} style={{ marginTop: '20px', marginBottom: '10px' }}>
             <h3>Delivery Details</h3>
           </Grid>
           <Grid item xs={6}>
@@ -112,11 +172,18 @@ function Checkout() {
               sx={{ width: '590px' }}
               value={text3}
               onChange={(e) => setText3(e.target.value)}
+              style={{ marginTop: '10px' }}
               required
             />
           </Grid>
 
-          <Button variant="contained" sx={{ width: '100px', height: '40px' }} onClick={checkSave}>
+          <Button
+            variant="contained"
+            sx={{ width: '100px', height: '40px' }}
+            onClick={checkSave}
+            disabled={products.length == 0}
+            style={{ marginTop: '10px' }}
+          >
             Save
           </Button>
         </Grid>

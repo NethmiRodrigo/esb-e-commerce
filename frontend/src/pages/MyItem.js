@@ -24,7 +24,7 @@ import Page from '../components/Page';
 import { fCurrency } from '../utils/formatNumber';
 
 // constants
-import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, DUMMY_USER_ID, JWT_TOKEN } from '../utils/constants';
+import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, JWT_TOKEN } from '../utils/constants';
 
 const token = localStorage.getItem('Token');
 const userId = token ? jwtDecode(token, JWT_TOKEN).user.id : 0;
@@ -165,10 +165,6 @@ MyShopProductCard.propTypes = {
 
 function MyShopProductCard({ product, onClickDelete, onClickEdit }) {
   const { name, imgURI, price } = product;
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   return (
     <Card>
