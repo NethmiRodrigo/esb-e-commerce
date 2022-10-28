@@ -12,12 +12,14 @@ import { JWT_TOKEN } from './utils/constants';
 
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('Token');
-    if (token) {
-      const decodedToken = jwtDecode(token, JWT_TOKEN);
-      if (decodedToken.exp * 1000 < Date.now()) {
-        localStorage.removeItem('Token');
-      } else config.headers.authorization = `Bearer ${token}`;
+    if (config.url.includes('localhost')) {
+      const token = localStorage.getItem('Token');
+      if (token) {
+        const decodedToken = jwtDecode(token, JWT_TOKEN);
+        if (decodedToken.exp * 1000 < Date.now()) {
+          localStorage.removeItem('Token');
+        } else config.headers.authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },

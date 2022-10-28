@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -26,8 +26,12 @@ import { fCurrency } from '../utils/formatNumber';
 // constants
 import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, DUMMY_USER_ID, JWT_TOKEN } from '../utils/constants';
 
+const token = localStorage.getItem('Token');
+const userId = token ? jwtDecode(token, JWT_TOKEN).user.id : 0;
+
 export default function MyItem() {
   const [open, setOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -38,8 +42,10 @@ export default function MyItem() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const token = localStorage.getItem('Token');
-  const userId = token ? jwtDecode(token, JWT_TOKEN).user.id : 0;
+  const selectedProduct = useMemo(() => {
+    if (!(selectedId && products.length)) return null;
+    return products.find((e) => +e.id === +selectedId);
+  }, [selectedId, products]);
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -53,6 +59,12 @@ export default function MyItem() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  const onClickEdit = (id) => {
+    if (!id) return;
+    setSelectedId(id);
+    setEditOpen(true);
+  };
 
   const onClickDelete = (id) => {
     if (!id) return;
@@ -98,7 +110,7 @@ export default function MyItem() {
           </Stack>
         </Stack>
 
-        <MyProductList products={products} onClickDelete={onClickDelete} />
+        <MyProductList products={products} onClickDelete={onClickDelete} onClickEdit={onClickEdit} />
       </Container>
       <ConfirmModal
         open={confirmOpen}
@@ -106,6 +118,13 @@ export default function MyItem() {
         title="Delete product"
         description="Are you sure you want to delete this product?"
         onOk={onDeleteConfirm}
+      />
+      <BasicModal
+        open={editOpen}
+        handleClose={() => setEditOpen(false)}
+        existingItem={selectedProduct}
+        handleRefetch={fetchProducts}
+        type={1}
       />
     </Page>
   );
@@ -118,12 +137,12 @@ MyProductList.propTypes = {
   onClickDelete: PropTypes.any,
 };
 
-function MyProductList({ products, onClickDelete, ...other }) {
+function MyProductList({ products, onClickDelete, onClickEdit, ...other }) {
   return (
     <Grid container spacing={3} {...other}>
       {products.map((product) => (
-        <Grid key={product.id} item xs={12} sm={6} md={3}>
-          <MyShopProductCard product={product} onClickDelete={onClickDelete} />
+        <Grid key={product.id} item xs={12} sm={6} md={4}>
+          <MyShopProductCard product={product} onClickDelete={onClickDelete} onClickEdit={onClickEdit} />
         </Grid>
       ))}
     </Grid>
@@ -144,7 +163,7 @@ MyShopProductCard.propTypes = {
   product: PropTypes.object,
 };
 
-function MyShopProductCard({ product, onClickDelete }) {
+function MyShopProductCard({ product, onClickDelete, onClickEdit }) {
   const { name, imgURI, price } = product;
 
   const [open, setOpen] = useState(false);
@@ -153,7 +172,6 @@ function MyShopProductCard({ product, onClickDelete }) {
 
   return (
     <Card>
-      <BasicModal open={open} handleClose={handleClose} type={1} />
       <Box sx={{ pt: '100%', position: 'relative' }}>
         <ProductImgStyle alt={name} src={imgURI} />
       </Box>
@@ -165,12 +183,12 @@ function MyShopProductCard({ product, onClickDelete }) {
           </Typography>
         </Link>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
           <Typography variant="subtitle1">
             &nbsp;
             {fCurrency(price)}
           </Typography>
-          <Button variant="outlined" onClick={handleOpen}>
+          <Button variant="outlined" onClick={() => onClickEdit(product.id)}>
             Edit
           </Button>
           <Button
@@ -212,10 +230,10 @@ BasicModal.propTypes = {
   open: PropTypes.bool,
   handleClose: PropTypes.any,
   handleRefetch: PropTypes.any,
-  objArr: PropTypes.any,
+  existingItem: PropTypes.any,
 };
 
-function BasicModal({ type, open, handleClose, handleRefetch, objArr }) {
+function BasicModal({ type, open, handleClose, handleRefetch, existingItem }) {
   const navigate = useNavigate();
   const Schema = Yup.object().shape({
     name: Yup.string().required('Item name is required'),
@@ -224,9 +242,9 @@ function BasicModal({ type, open, handleClose, handleRefetch, objArr }) {
   });
 
   const defaultValues = {
-    Item_name: '',
-    Item_price: '',
-    remember: true,
+    name: '',
+    price: 0,
+    quantity: 0,
   };
 
   const [image, setImage] = useState(null);
@@ -251,7 +269,14 @@ function BasicModal({ type, open, handleClose, handleRefetch, objArr }) {
     navigate('/my-item', { replace: true });
   };
 
-  const onSubmit = async (item) => {
+  useEffect(() => {
+    if (!existingItem || !methods) return;
+    methods.setValue('name', existingItem.name);
+    methods.setValue('price', existingItem.price);
+    methods.setValue('quantity', existingItem.quantity);
+  }, [existingItem, methods]);
+
+  const onSubmitAdd = async (item) => {
     setShowError(false);
     if (!image) {
       setError('Image cannot be null');
@@ -275,7 +300,39 @@ function BasicModal({ type, open, handleClose, handleRefetch, objArr }) {
         quantity: item.quantity,
         price: item.price,
         imgURI: uploadUrl,
-        userId: DUMMY_USER_ID,
+        userId: userId,
+      });
+
+      done();
+    } catch (error) {
+      setError(error.toString());
+      setShowError(true);
+    }
+  };
+
+  const onSubmitEdit = async (item) => {
+    if (!existingItem) return;
+    setShowError(false);
+    let { imgURI } = existingItem;
+    try {
+      if (image) {
+        const formData = new FormData();
+        formData.append('file', image);
+        formData.append('upload_preset', UPLOAD_PRESET);
+        formData.append('cloud_name', CLOUD_NAME);
+        const imageResult = await axios.post(`${CLOUD_URL}/image/upload`, formData);
+        imgURI = imageResult?.data?.url;
+        if (!imgURI) {
+          setError('Image cannot be null');
+          setShowError(true);
+          return;
+        }
+      }
+      await axios.put(`${API_URL}/products/${existingItem.id}`, {
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        imgURI,
       });
 
       done();
@@ -302,7 +359,7 @@ function BasicModal({ type, open, handleClose, handleRefetch, objArr }) {
 
               <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter product details below.</Typography>
 
-              <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+              <FormProvider methods={methods} onSubmit={handleSubmit(type === 2 ? onSubmitAdd : onSubmitEdit)}>
                 <Stack spacing={3} sx={{ mb: 4 }}>
                   {showError && (
                     <Collapse in={showError}>
