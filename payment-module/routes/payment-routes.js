@@ -13,8 +13,6 @@ router.post("/", async (req, res, next) => {
       Fee: Fee,
     };
 
-    console.log(payload);
-
     const result = { data: "Payment Successful" };
 
     res.json(result);

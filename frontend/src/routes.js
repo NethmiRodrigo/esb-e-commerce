@@ -12,7 +12,6 @@ import { CardPayment } from './pages/CardPayment';
 import { MobilePayment } from './pages/MobilePayment';
 import Checkout from './pages/Checkout';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
-// ----------------------------------------------------------------------
 
 export default function Router() {
   return useRoutes([
@@ -31,12 +30,12 @@ export default function Router() {
     },
 
     {
-      path: '/checkout/card-payment',
+      path: '/card-payment',
       element: <CardPayment />,
     },
 
     {
-      path: '/checkout/mobile-payment',
+      path: '/mobile-payment',
       element: <MobilePayment />,
     },
 

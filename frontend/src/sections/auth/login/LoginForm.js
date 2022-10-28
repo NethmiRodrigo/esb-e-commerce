@@ -51,7 +51,6 @@ export default function LoginForm() {
       localStorage.setItem('Token', result.data.token);
       navigate('/', { replace: true });
     } catch (error) {
-      console.log(error);
       setError(error.message);
       setShowError(true);
     }

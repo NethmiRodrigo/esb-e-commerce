@@ -38,7 +38,6 @@ function NavItem({ item, active }) {
   const [open, setOpen] = useState(isActiveRoot);
 
   const handleOpen = () => {
-    console.log(item, '   ', open);
     setOpen((prev) => !prev);
   };
 

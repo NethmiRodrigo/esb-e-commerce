@@ -77,7 +77,7 @@ function Checkout() {
         totalFee: subTotal,
         items: productIds,
       };
-      await axios.post('http://localhost:5001/buyer-items', payload);
+      await axios.post('http://localhost:5009/buyer-items', payload);
 
       localStorage.setItem('buyer-data', JSON.stringify(payload));
 
@@ -148,7 +148,7 @@ function Checkout() {
           <Grid item xs={12} style={{ marginTop: '20px', marginBottom: '10px' }}>
             <h3>Delivery Details</h3>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={6} style={{ marginTop: '10px' }}>
             <TextField
               id="outlined-basic"
               label="First Name"

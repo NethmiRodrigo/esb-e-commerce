@@ -10,7 +10,14 @@ router.post("/", async (req, res, next) => {
   }
 
   try {
-    const { customerFirstName, customerLastName, address, deliveryPrice, totalFee, items } = req.body;
+    const {
+      customerFirstName,
+      customerLastName,
+      address,
+      deliveryPrice,
+      totalFee,
+      items,
+    } = req.body;
 
     const buyerItems = {
       customerFirstName,
@@ -22,12 +29,10 @@ router.post("/", async (req, res, next) => {
       orderID: parseInt(orderID),
     };
 
-    console.log(req.body.items);
-
     const result = await create(buyerItems);
 
     for (let i = 0; i < items.length; i++) {
-      const result2 = await createItem(orderID, items[i]);
+      await createItem(orderID, items[i]);
     }
 
     res.json(result);
