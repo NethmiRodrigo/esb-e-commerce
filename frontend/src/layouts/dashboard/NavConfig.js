@@ -20,7 +20,7 @@ const getNavConfig = () => {
     const decodedToken = jwtDecode(token, JWT_TOKEN);
     if (decodedToken.exp * 1000 < Date.now()) {
       localStorage.removeItem('Token');
-    } else if (decodedToken.user.role === 'buyer') {
+    } else if (decodedToken.user.role === 'seller') {
       config.push({ title: 'My Products', path: '/my-item', icon: getIcon('eva:file-text-fill') });
     }
   }

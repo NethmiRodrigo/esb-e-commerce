@@ -101,7 +101,7 @@ function Checkout() {
     setProducts(cart);
     setSubTotal(parseInt(subTotal) - parseInt(product.price));
     if (total > 0) setTotal(parseInt(total) - parseInt(product.price));
-    sessionStorage.setItem('cart', cart);
+    sessionStorage.setItem('cart', JSON.stringify(cart));
   };
 
   return (

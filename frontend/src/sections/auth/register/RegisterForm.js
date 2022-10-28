@@ -70,7 +70,7 @@ export default function RegisterForm() {
 
   const options = [
     { name: 'Buyer', value: 'buyer' },
-    { name: 'Seller', value: 'Seller' },
+    { name: 'Seller', value: 'seller' },
   ];
 
   return (
