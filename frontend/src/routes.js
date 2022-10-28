@@ -5,11 +5,13 @@ import DashboardLayout from './layouts/dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Products from './pages/Products';
+import NotFound from './pages/Page404';
 import MyItem from './pages/MyItem';
 import { AddNewItems } from './pages/AddNewItems';
 import { CardPayment } from './pages/CardPayment';
 import { MobilePayment } from './pages/MobilePayment';
 import Checkout from './pages/Checkout';
+import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 // ----------------------------------------------------------------------
 
 export default function Router() {
@@ -45,6 +47,15 @@ export default function Router() {
     {
       path: 'register',
       element: <Register />,
+    },
+    {
+      path: '/',
+      element: <LogoOnlyLayout />,
+      children: [
+        { path: '/', element: <Navigate to="/" /> },
+        { path: '404', element: <NotFound /> },
+        { path: '*', element: <Navigate to="/404" /> },
+      ],
     },
     {
       path: '*',

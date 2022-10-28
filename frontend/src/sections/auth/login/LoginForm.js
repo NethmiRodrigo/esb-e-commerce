@@ -1,11 +1,12 @@
-import * as Yup from 'yup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import axios from 'axios';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
-import { Stack, IconButton, InputAdornment } from '@mui/material';
+import { Stack, IconButton, InputAdornment, Collapse, Alert } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/Iconify';
@@ -17,6 +18,8 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [error, setError] = useState(null);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
@@ -26,7 +29,6 @@ export default function LoginForm() {
   const defaultValues = {
     email: '',
     password: '',
-    remember: true,
   };
 
   const methods = useForm({
@@ -40,12 +42,32 @@ export default function LoginForm() {
   } = methods;
 
   const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+    try {
+      const data = {
+        email: methods.getValues('email'),
+        password: methods.getValues('password'),
+      };
+      const result = await axios.post(`http://localhost:5003/auth/login`, data);
+      localStorage.setItem('Token', result.data.token);
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+      setShowError(true);
+    }
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3} sx={{ mb: 4 }}>
+        {showError && (
+          <Collapse in={showError}>
+            <Alert onClose={() => setShowError(false)} severity="error">
+              {error}
+            </Alert>
+          </Collapse>
+        )}
+
         <RHFTextField name="email" label="Email address" />
 
         <RHFTextField

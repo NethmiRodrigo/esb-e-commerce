@@ -6,7 +6,7 @@ const { jwtKey } = require("../config/config");
 const router = express.Router();
 
 const createToken = (user) => {
-  return jwt.sign({ user }, jwtKey);
+  return jwt.sign({ user }, jwtKey, { expiresIn: "2 days" });
 };
 
 router.post("/register", async (req, res, next) => {

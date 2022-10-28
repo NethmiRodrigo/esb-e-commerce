@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // form
 import { useForm } from 'react-hook-form';
@@ -8,7 +9,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { Stack, IconButton, InputAdornment, Alert, Collapse } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import { register } from '../../../services/auth.service';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFSelect } from '../../../components/hook-form';
@@ -53,13 +53,14 @@ export default function RegisterForm() {
   const onSubmit = async () => {
     setShowError(false);
     try {
-      await register({
+      const data = {
         email: methods.getValues('email'),
         password: methods.getValues('password'),
         confirmPassword: methods.getValues('confirmPassword'),
         name: methods.getValues('name'),
         role: methods.getValues('role'),
-      });
+      };
+      await axios.post(`http://localhost:5003/auth/register`, data);
       navigate('/login', { replace: true });
     } catch (error) {
       setError(error.message);

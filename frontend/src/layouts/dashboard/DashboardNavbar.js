@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import jwtDecode from 'jwt-decode';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar } from '@mui/material';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+
+import { JWT_TOKEN } from '../../utils/constants';
 
 const DRAWER_WIDTH = 280;
 const APPBAR_MOBILE = 64;
@@ -31,20 +35,44 @@ DashboardNavbar.propTypes = {
   onOpenSidebar: PropTypes.func,
 };
 
-export default function DashboardNavbar({ onOpenSidebar }) {
+export default function DashboardNavbar() {
+  const [authorized, setAuth] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem('Token');
+    if (token) {
+      const decodedToken = jwtDecode(token, JWT_TOKEN);
+      if (decodedToken.exp * 1000 < Date.now()) {
+        localStorage.removeItem('Token');
+      } else setAuth(true);
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem('Token');
+    setAuth(false);
+  };
+
   return (
     <RootStyle>
       <ToolbarStyle>
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
-          <Link to="/login">
-            <Button variant="contained">Login</Button>
-          </Link>
+          {authorized ? (
+            <Button variant="contained" onClick={() => logout()}>
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="contained">Login</Button>
+              </Link>
 
-          <Link to="/register" style={{ textDecoration: 'none' }}>
-            <Button variant="outlined">Signup</Button>
-          </Link>
+              <Link to="/register" style={{ textDecoration: 'none' }}>
+                <Button variant="outlined">Signup</Button>
+              </Link>
+            </>
+          )}
         </Stack>
       </ToolbarStyle>
     </RootStyle>
