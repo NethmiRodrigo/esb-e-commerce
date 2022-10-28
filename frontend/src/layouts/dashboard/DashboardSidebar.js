@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
 import { styled } from '@mui/material/styles';
 import { Box, Drawer, Typography } from '@mui/material';
 import useResponsive from '../../hooks/useResponsive';
@@ -10,9 +9,7 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 
-import navConfig from './NavConfig';
-import { JWT_TOKEN } from '../../utils/constants';
-import Iconify from '../../components/Iconify';
+import getNavConfig from './NavConfig';
 
 const DRAWER_WIDTH = 280;
 
@@ -23,8 +20,6 @@ const RootStyle = styled('div')(({ theme }) => ({
   },
 }));
 
-const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
-
 DashboardSidebar.propTypes = {
   isOpenSidebar: PropTypes.bool,
   onCloseSidebar: PropTypes.func,
@@ -32,7 +27,7 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const navItems = navConfig;
+  const [config, setConfig] = useState([]);
 
   const isDesktop = useResponsive('up', 'lg');
 
@@ -41,6 +36,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       onCloseSidebar();
     }
   }, [pathname]);
+
+  useEffect(() => {
+    const res = getNavConfig();
+    setConfig(res);
+  }, []);
 
   const renderContent = (
     <Scrollbar
@@ -67,7 +67,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         TipToe
       </Typography>
 
-      <NavSection navConfig={navItems} />
+      <NavSection navConfig={config} />
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>

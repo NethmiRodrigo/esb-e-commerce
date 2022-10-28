@@ -3,6 +3,7 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import jwtDecode from 'jwt-decode';
 
 import PropTypes from 'prop-types';
 
@@ -23,7 +24,7 @@ import Page from '../components/Page';
 import { fCurrency } from '../utils/formatNumber';
 
 // constants
-import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, DUMMY_USER_ID } from '../utils/constants';
+import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, DUMMY_USER_ID, JWT_TOKEN } from '../utils/constants';
 
 export default function MyItem() {
   const [open, setOpen] = useState(false);
@@ -37,9 +38,12 @@ export default function MyItem() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const token = localStorage.getItem('Token');
+  const userId = token ? jwtDecode(token, JWT_TOKEN).user.id : 0;
+
   const fetchProducts = useCallback(async () => {
     try {
-      const result = await axios.get(`${API_URL}/products/${DUMMY_USER_ID}`);
+      const result = await axios.get(`${API_URL}/products/${userId}`);
       setProducts(result.data);
     } catch (error) {
       console.log(error);

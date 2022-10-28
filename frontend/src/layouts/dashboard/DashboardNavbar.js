@@ -36,7 +36,6 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar() {
-  const navigate = useNavigate();
   const [authorized, setAuth] = useState(false);
 
   useEffect(() => {
