@@ -30,6 +30,16 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
+/** Update inventory after order */
+router.post("/checkout", async (req, res, next) => {
+  try {
+    const { products } = req.body;
+  } catch (err) {
+    console.error(`Error while updating inventory`, err.message);
+    next(err);
+  }
+});
+
 /** Add a product */
 router.post("/", async (req, res, next) => {
   try {
@@ -57,7 +67,7 @@ router.put("/:id", async (req, res, next) => {
     const result = await update(req.params.id, req.body);
     res.json(result);
   } catch (err) {
-    console.error(`Error while updating programming language`, err.message);
+    console.error(`Error while updating products`, err.message);
     next(err);
   }
 });
@@ -68,7 +78,7 @@ router.delete("/:id", async (req, res, next) => {
     const result = await remove(req.params.id);
     res.json(result);
   } catch (err) {
-    console.error(`Error while deleting programming language`, err.message);
+    console.error(`Error while deleting products`, err.message);
     next(err);
   }
 });

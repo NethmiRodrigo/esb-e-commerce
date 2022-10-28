@@ -26,7 +26,7 @@ export function CardPayment() {
         CVN: text4,
         Fee: 15000,
       };
-      const result = await axios.post('http://localhost:5002/Payment', payload);
+      const result = await axios.post('http://localhost:5005/payment', payload);
 
       navigate('/');
     } catch (error) {

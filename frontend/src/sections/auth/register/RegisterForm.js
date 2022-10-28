@@ -60,7 +60,7 @@ export default function RegisterForm() {
         name: methods.getValues('name'),
         role: methods.getValues('role'),
       };
-      await axios.post(`http://localhost:5003/auth/register`, data);
+      await axios.post(`http://localhost:5001/auth/register`, data);
       navigate('/login', { replace: true });
     } catch (error) {
       setError(error.message);

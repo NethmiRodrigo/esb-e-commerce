@@ -17,7 +17,7 @@ app.use(
 app.get("/", (_, res) => {
   res.json("Payment module is up and running");
 });
-app.use("/Payment", paymentRoute);
+app.use("/payment", paymentRoute);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

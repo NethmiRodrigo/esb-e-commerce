@@ -15,7 +15,7 @@ export default function EcommerceShop() {
 
   const fetchProducts = async () => {
     try {
-      const result = await axios.get('http://localhost:5000/products');
+      const result = await axios.get('http://localhost:5004/products');
       setProducts(result.data);
     } catch (error) {
       console.error(error);

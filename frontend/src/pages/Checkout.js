@@ -55,7 +55,7 @@ function Checkout() {
   const checkSave = async () => {
     if (text1 !== '' && text2 !== '' && text3 !== '') {
       try {
-        const result = await axios.get('http://localhost:5008/delivery-items');
+        const result = await axios.get('http://localhost:5003/delivery-items');
         setDeliveryFee(result.data.deliveryPrice);
         setTotal(parseInt(subTotal) + parseInt(result.data.deliveryPrice));
         setSaveClicked(false);
@@ -77,7 +77,7 @@ function Checkout() {
         totalFee: subTotal,
         items: productIds,
       };
-      await axios.post('http://localhost:5009/buyer-items', payload);
+      await axios.post('http://localhost:5002/buyer-items', payload);
 
       localStorage.setItem('buyer-data', JSON.stringify(payload));
 

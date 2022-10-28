@@ -47,7 +47,7 @@ export default function LoginForm() {
         email: methods.getValues('email'),
         password: methods.getValues('password'),
       };
-      const result = await axios.post(`http://localhost:5003/auth/login`, data);
+      const result = await axios.post(`http://localhost:5001/auth/login`, data);
       localStorage.setItem('Token', result.data.token);
       navigate('/', { replace: true });
     } catch (error) {

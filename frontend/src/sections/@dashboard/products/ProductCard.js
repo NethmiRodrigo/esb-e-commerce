@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 import { useState } from 'react';
 // material
-import { Box, Card, Link, Typography, Stack } from '@mui/material';
+import { Box, Card, Link, Typography, Stack, Chip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 
@@ -29,7 +29,8 @@ ShopProductCard.propTypes = {
 };
 
 export default function ShopProductCard({ setCartValue, cartValue, product, addToCart }) {
-  const { name, imgURI, price } = product;
+  const { name, imgURI, price, quantity } = product;
+  console.log(product);
 
   const [buttonState, setButtonState] = useState(true);
   const [buttonText, setButtonText] = useState(true);
@@ -53,11 +54,14 @@ export default function ShopProductCard({ setCartValue, cartValue, product, addT
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link to="#" color="inherit" underline="hover" component={RouterLink}>
-          <Typography variant="subtitle2" noWrap>
-            {name}
-          </Typography>
-        </Link>
+        <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Link to="#" color="inherit" underline="hover" component={RouterLink}>
+            <Typography variant="subtitle2" noWrap>
+              {name}
+            </Typography>
+          </Link>
+          {quantity == 0 && <Chip label="Out of Stock" color="error" />}
+        </Stack>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           <Typography variant="subtitle1">
@@ -65,7 +69,7 @@ export default function ShopProductCard({ setCartValue, cartValue, product, addT
             {fCurrency(price)}
           </Typography>
 
-          <Button variant={buttonState ? 'outlined' : 'contained'} onClick={changeBtnState}>
+          <Button variant={buttonState ? 'outlined' : 'contained'} onClick={changeBtnState} disabled={quantity == 0}>
             {buttonState ? 'Add to cart' : 'Remove '}
           </Button>
         </Stack>
