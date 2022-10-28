@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const deliveryRoute = require("./routes/delivery-routes");
 const app = express();
-const port = 5000;
+const port = 5008;
 
 app.use(cors());
 app.use(express.json());

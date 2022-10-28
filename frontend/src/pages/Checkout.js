@@ -29,6 +29,8 @@ function Checkout() {
   const [text1, setText1] = useState('');
   const [text2, setText2] = useState('');
   const [text3, setText3] = useState('');
+  const [subTotal, setSubTotal] = useState(0);
+  const [total, setTotal] = useState(0);
   const [products, setProducts] = useState([]);
 
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -43,6 +45,9 @@ function Checkout() {
     let cart = sessionStorage.getItem('cart');
     if (cart) {
       cart = JSON.parse(cart);
+      let total = 0;
+      cart.forEach((product) => (total = total + parseInt(product.price)));
+      setSubTotal(total);
       setProducts(cart);
     }
   }, []);
@@ -50,9 +55,9 @@ function Checkout() {
   const checkSave = async () => {
     if (text1 !== '' && text2 !== '' && text3 !== '') {
       try {
-        const result = await axios.get('http://localhost:5000/delivery-items');
+        const result = await axios.get('http://localhost:5008/delivery-items');
         setDeliveryFee(result.data.deliveryPrice);
-
+        setTotal(parseInt(subTotal) + parseInt(result.data.deliveryPrice));
         setSaveClicked(false);
       } catch (error) {
         console.error(error);
@@ -63,13 +68,14 @@ function Checkout() {
   // have to pass item IDs
   const orderPlaced = async () => {
     try {
+      let productIds = products.map((product) => product.id);
       const payload = {
         customerFirstName: text1,
         customerLastName: text2,
         address: text3,
         deliveryPrice: deliveryFee,
-        totalFee: 1500,
-        items: [1, 2, 3],
+        totalFee: subTotal,
+        items: productIds,
       };
       await axios.post('http://localhost:5001/buyer-items', payload);
 
@@ -92,6 +98,8 @@ function Checkout() {
       1
     );
     setProducts(cart);
+    setSubTotal(parseInt(subTotal) - parseInt(product.price));
+    if (total > 0) setTotal(parseInt(total) - parseInt(product.price));
     sessionStorage.setItem('cart', cart);
   };
 
@@ -228,7 +236,7 @@ function Checkout() {
               }}
             >
               <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
-                {}
+                {fCurrency(subTotal)}
               </Paper>
             </Box>
           </Grid>
@@ -264,7 +272,7 @@ function Checkout() {
               }}
             >
               <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
-                {deliveryFee}
+                {fCurrency(deliveryFee)}
               </Paper>
             </Box>
           </Grid>
@@ -300,14 +308,14 @@ function Checkout() {
               }}
             >
               <Paper elevation={0} sx={{ backgroundColor: '#e8e6e6', pt: 1, pl: 3 }}>
-                {deliveryFee}
+                {fCurrency(total)}
               </Paper>
             </Box>
           </Grid>
 
           <Button
             variant="contained"
-            sx={{ width: '335px', mt: 3 }}
+            sx={{ width: '335px', height: '50px' }}
             disabled={saveClicked || paymentSelected}
             onClick={orderPlaced}
           >
