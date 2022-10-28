@@ -27,6 +27,7 @@ export function CardPayment() {
         Fee: 15000,
       };
       const result = await axios.post('http://localhost:5005/payment', payload);
+      localStorage.removeItem('cart');
 
       navigate('/');
     } catch (error) {
