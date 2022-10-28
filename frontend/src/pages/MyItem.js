@@ -13,6 +13,7 @@ import { Container, Stack, Typography, Button, Grid, Card, Box, Link, Alert, Col
 // components
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
+import { ConfirmModal } from '../components/Confirm';
 import Iconify from '../components/Iconify';
 
 import { FormProvider, RHFTextField } from '../components/hook-form';
@@ -26,7 +27,12 @@ import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, DUMMY_USER_ID } from '..
 
 export default function MyItem() {
   const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [products, setProducts] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -44,8 +50,35 @@ export default function MyItem() {
     fetchProducts();
   }, [fetchProducts]);
 
+  const onClickDelete = (id) => {
+    if (!id) return;
+    setSelectedId(id);
+    setConfirmOpen(true);
+  };
+
+  const onDeleteConfirm = async () => {
+    setShowError(false);
+    if (!selectedId) return;
+    try {
+      await axios.delete(`${API_URL}/products/${selectedId}`);
+      fetchProducts();
+    } catch (error) {
+      setError(error.toString());
+      setShowError(true);
+    } finally {
+      setConfirmOpen(false);
+    }
+  };
+
   return (
     <Page title="Dashboard: Products">
+      {showError && (
+        <Collapse in={showError}>
+          <Alert onClose={() => setShowError(false)} severity="error">
+            {error}
+          </Alert>
+        </Collapse>
+      )}
       <Container>
         <BasicModal open={open} handleClose={handleClose} type={2} handleRefetch={fetchProducts} />
 
@@ -61,8 +94,15 @@ export default function MyItem() {
           </Stack>
         </Stack>
 
-        <MyProductList products={products} />
+        <MyProductList products={products} onClickDelete={onClickDelete} />
       </Container>
+      <ConfirmModal
+        open={confirmOpen}
+        handleClose={() => setConfirmOpen(false)}
+        title="Delete product"
+        description="Are you sure you want to delete this product?"
+        onOk={onDeleteConfirm}
+      />
     </Page>
   );
 }
@@ -71,14 +111,15 @@ MyProductList.propTypes = {
   products: PropTypes.array.isRequired,
   setCartValue: PropTypes.any,
   cartValue: PropTypes.number,
+  onClickDelete: PropTypes.any,
 };
 
-function MyProductList({ setCartValue, cartValue, products, ...other }) {
+function MyProductList({ products, onClickDelete, ...other }) {
   return (
     <Grid container spacing={3} {...other}>
       {products.map((product) => (
         <Grid key={product.id} item xs={12} sm={6} md={3}>
-          <MyShopProductCard product={product} setCartValue={setCartValue} cartValue={cartValue} />
+          <MyShopProductCard product={product} onClickDelete={onClickDelete} />
         </Grid>
       ))}
     </Grid>
@@ -97,14 +138,11 @@ const ProductImgStyle = styled('img')({
 
 MyShopProductCard.propTypes = {
   product: PropTypes.object,
-  setCartValue: PropTypes.any,
-  cartValue: PropTypes.number,
 };
 
-function MyShopProductCard({ setCartValue, cartValue, product }) {
+function MyShopProductCard({ product, onClickDelete }) {
   const { name, imgURI, price } = product;
 
-  const [buttonState, setButtonState] = useState(true);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -128,8 +166,16 @@ function MyShopProductCard({ setCartValue, cartValue, product }) {
             &nbsp;
             {fCurrency(price)}
           </Typography>
-          <Button variant={buttonState ? 'outlined' : 'contained'} onClick={handleOpen}>
+          <Button variant="outlined" onClick={handleOpen}>
             Edit
+          </Button>
+          <Button
+            startIcon={<Iconify icon={'eva:trash-2-outline'} />}
+            color="error"
+            variant="outlined"
+            onClick={() => onClickDelete(product.id)}
+          >
+            Delete
           </Button>
         </Stack>
       </Stack>

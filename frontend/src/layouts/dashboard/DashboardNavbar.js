@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import jwtDecode from 'jwt-decode';
 // material
@@ -36,7 +36,9 @@ DashboardNavbar.propTypes = {
 };
 
 export default function DashboardNavbar() {
+  const navigate = useNavigate();
   const [authorized, setAuth] = useState(false);
+
   useEffect(() => {
     const token = localStorage.getItem('Token');
     if (token) {
@@ -50,6 +52,7 @@ export default function DashboardNavbar() {
   const logout = () => {
     localStorage.removeItem('Token');
     setAuth(false);
+    window.location.reload();
   };
 
   return (
