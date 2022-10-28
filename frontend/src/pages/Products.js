@@ -29,6 +29,24 @@ export default function EcommerceShop() {
   const [cartValue, setCartValue] = useState(0);
   const navigate = useNavigate();
 
+  const addToCart = (product, mode = 'add') => {
+    let cart = sessionStorage.getItem('cart');
+    if (cart) {
+      cart = JSON.parse(cart);
+    } else cart = [];
+    if (mode === 'add') cart.push(product);
+    else {
+      if (cart.length > 0) {
+        cart.splice(
+          cart.findIndex((e) => e.id === product.id),
+          1
+        );
+      }
+    }
+    cart = JSON.stringify(cart);
+    sessionStorage.setItem('cart', cart);
+  };
+
   const proceedToCheckout = () => {
     navigate('/checkout');
   };
@@ -40,7 +58,7 @@ export default function EcommerceShop() {
           Products
         </Typography>
 
-        <ProductList setCartValue={setCartValue} cartValue={cartValue} products={products} />
+        <ProductList setCartValue={setCartValue} cartValue={cartValue} products={products} addToCart={addToCart} />
         <ProductCartWidget cartValue={cartValue} proceedToCheckout={proceedToCheckout} />
       </Container>
     </Page>

@@ -28,7 +28,7 @@ ShopProductCard.propTypes = {
   cartValue: PropTypes.number,
 };
 
-export default function ShopProductCard({ setCartValue, cartValue, product }) {
+export default function ShopProductCard({ setCartValue, cartValue, product, addToCart }) {
   const { name, imgURI, price } = product;
 
   const [buttonState, setButtonState] = useState(true);
@@ -37,8 +37,10 @@ export default function ShopProductCard({ setCartValue, cartValue, product }) {
   const changeBtnState = () => {
     if (buttonState) {
       setCartValue(cartValue + 1);
+      addToCart(product, 'add');
     } else {
       setCartValue(cartValue - 1);
+      addToCart(product, 'remove');
     }
     setButtonState(!buttonState);
     setButtonText(!buttonText);
