@@ -5,5 +5,6 @@ const config = {
     password: "",
     database: "esb-ecommerce",
   },
+  jwtKey: "esb-ecommer-jwt-token-key",
 };
 module.exports = config;

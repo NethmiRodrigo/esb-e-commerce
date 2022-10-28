@@ -1,6 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const { getOne, create } = require("../services/user");
+const { jwtKey } = require("../config/config");
 const router = express.Router();
 
 router.post("/register", async (req, res, next) => {
@@ -28,7 +30,12 @@ router.post("/login", async (req, res, next) => {
   try {
     const user = await getOne(email);
     if (user.length == 0) return res.status(404).json("User not found");
-    return res.status(200).json(user);
+    const passwordIsCorrect = await bcrypt.compare(password, user[0].password);
+    if (!passwordIsCorrect)
+      return res.status(400).json("Incorrect credentials");
+    const token = jwt.sign({ user: user[0] }, jwtKey);
+    delete user[0].password;
+    return res.status(200).json({ user: user[0], token });
   } catch (error) {
     return res.status(500).json(error);
   }
