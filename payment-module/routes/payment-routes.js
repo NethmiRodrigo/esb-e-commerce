@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const generateOTP = () => {
+const generateOTP = (length) => {
   let possible = "1234567890";
   let text = "";
   for (let i = 0; i < length; i++) {
@@ -33,11 +33,12 @@ router.post("/", async (req, res, next) => {
 
 router.post("/send-otp", async (req, res, next) => {
   const { mobileNumber } = req.body;
-  const otp = generateOTP();
+  const otp = generateOTP(6);
   await axios.post(
     "http://send.ozonedesk.com/api/v2/send.php?user_id=104665&api_key=o8qb4pq5ztwmj636o&sender_id=ozoneDEMO",
     { to: mobileNumber, message: otp }
   );
+  res.json(otp);
 });
 
 module.exports = router;

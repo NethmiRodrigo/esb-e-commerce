@@ -80,6 +80,7 @@ function Checkout() {
       await axios.post('http://localhost:5002/buyer-items', payload);
 
       localStorage.setItem('buyer-data', JSON.stringify(payload));
+      sessionStorage.setItem('total', +subTotal + +deliveryFee);
 
       if (paymentMethod === 'card') {
         navigate('/card-payment');
