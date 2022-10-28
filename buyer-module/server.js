@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const buyerRoute = require("./routes/buyer-routes");
 const app = express();
-const port = 5009;
+const port = 5002;
 
 app.use(cors());
 app.use(express.json());
