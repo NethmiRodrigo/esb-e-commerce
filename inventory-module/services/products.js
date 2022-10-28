@@ -12,12 +12,19 @@ const getAll = async () => {
   };
 };
 
+const getAllByUserId = async (userId) => {
+  const query = `SELECT * FROM product WHERE userId = ${userId}`;
+  const data = await db.query(query);
+
+  return data;
+};
+
 const create = async (product) => {
-  const query = `INSERT INTO product (name, quantity, price${
+  const query = `INSERT INTO product (name, userId, quantity, price${
     product.imgURI ? ", imgURI" : ""
-  }) VALUES ('${product.name}', ${product.quantity}, ${product.price}${
-    product.imgURI ? ", '" + product.imgURI + "'" : ""
-  })`;
+  }) VALUES ('${product.name}',${product.userId} , ${product.quantity}, ${
+    product.price
+  }${product.imgURI ? ", '" + product.imgURI + "'" : ""});`;
 
   const result = await db.query(query);
 
@@ -74,4 +81,5 @@ module.exports = {
   create,
   update,
   remove,
+  getAllByUserId,
 };

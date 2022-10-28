@@ -25,9 +25,8 @@ export default function Router() {
       children: [
         { path: '', element: <Products /> },
         { path: '/checkout', element: <Checkout /> },
-        // { path: 'user', element: <User /> },
         // { path: 'products', element: <Products /> },
-        { path: 'my-item', element: <MyItem /> },
+        { path: '/my-item', element: <MyItem /> },
       ],
     },
     {

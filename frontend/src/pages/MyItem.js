@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -9,28 +9,45 @@ import PropTypes from 'prop-types';
 // material
 import Modal from '@mui/material/Modal';
 import { LoadingButton } from '@mui/lab';
-import { Container, Stack, Typography, Button, Grid, Card, Box, Link } from '@mui/material';
+import { Container, Stack, Typography, Button, Grid, Card, Box, Link, Alert, Collapse } from '@mui/material';
 // components
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
+import Iconify from '../components/Iconify';
 
 import { FormProvider, RHFTextField } from '../components/hook-form';
 import Page from '../components/Page';
 
-// mock
-import PRODUCTS from '../_mock/products';
-
 // utils
 import { fCurrency } from '../utils/formatNumber';
 
+// constants
+import { UPLOAD_PRESET, CLOUD_NAME, CLOUD_URL, API_URL, DUMMY_USER_ID } from '../utils/constants';
+
 export default function MyItem() {
   const [open, setOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      const result = await axios.get(`${API_URL}/products/${DUMMY_USER_ID}`);
+      setProducts(result.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   return (
     <Page title="Dashboard: Products">
       <Container>
-        <BasicModal open={open} handleClose={handleClose} type={2} />
+        <BasicModal open={open} handleClose={handleClose} type={2} handleRefetch={fetchProducts} />
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -44,7 +61,7 @@ export default function MyItem() {
           </Stack>
         </Stack>
 
-        <MyProductList products={PRODUCTS} />
+        <MyProductList products={products} />
       </Container>
     </Page>
   );
@@ -85,7 +102,7 @@ MyShopProductCard.propTypes = {
 };
 
 function MyShopProductCard({ setCartValue, cartValue, product }) {
-  const { name, cover, price } = product;
+  const { name, imgURI, price } = product;
 
   const [buttonState, setButtonState] = useState(true);
   const [open, setOpen] = useState(false);
@@ -96,7 +113,7 @@ function MyShopProductCard({ setCartValue, cartValue, product }) {
     <Card>
       <BasicModal open={open} handleClose={handleClose} type={1} />
       <Box sx={{ pt: '100%', position: 'relative' }}>
-        <ProductImgStyle alt={name} src={cover} />
+        <ProductImgStyle alt={name} src={imgURI} />
       </Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
@@ -144,14 +161,16 @@ BasicModal.propTypes = {
   type: PropTypes.number,
   open: PropTypes.bool,
   handleClose: PropTypes.any,
+  handleRefetch: PropTypes.any,
   objArr: PropTypes.any,
 };
 
-function BasicModal({ type, open, handleClose, objArr }) {
+function BasicModal({ type, open, handleClose, handleRefetch, objArr }) {
   const navigate = useNavigate();
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
-    password: Yup.string().required('Password is required'),
+  const Schema = Yup.object().shape({
+    name: Yup.string().required('Item name is required'),
+    price: Yup.number().required('Price is required'),
+    quantity: Yup.number().required('Quanity is required'),
   });
 
   const defaultValues = {
@@ -160,8 +179,12 @@ function BasicModal({ type, open, handleClose, objArr }) {
     remember: true,
   };
 
+  const [image, setImage] = useState(null);
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
+
   const methods = useForm({
-    resolver: yupResolver(LoginSchema),
+    resolver: yupResolver(Schema),
     defaultValues,
   });
 
@@ -170,8 +193,46 @@ function BasicModal({ type, open, handleClose, objArr }) {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
-    navigate('/dashboard', { replace: true });
+  const done = () => {
+    methods.reset();
+    setImage(null);
+    handleClose();
+    handleRefetch();
+    navigate('/my-item', { replace: true });
+  };
+
+  const onSubmit = async (item) => {
+    setShowError(false);
+    if (!image) {
+      setError('Image cannot be null');
+      setShowError(true);
+      return;
+    }
+    try {
+      const formData = new FormData();
+      formData.append('file', image);
+      formData.append('upload_preset', UPLOAD_PRESET);
+      formData.append('cloud_name', CLOUD_NAME);
+      const imageResult = await axios.post(`${CLOUD_URL}/image/upload`, formData);
+      const uploadUrl = imageResult?.data?.url;
+      if (!uploadUrl) {
+        setError('Image cannot be null');
+        setShowError(true);
+        return;
+      }
+      await axios.post(`${API_URL}/products`, {
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        imgURI: uploadUrl,
+        userId: DUMMY_USER_ID,
+      });
+
+      done();
+    } catch (error) {
+      setError(error.toString());
+      setShowError(true);
+    }
   };
 
   return (
@@ -189,15 +250,28 @@ function BasicModal({ type, open, handleClose, objArr }) {
                 {type === 2 ? 'Add new product' : 'Edit product'}
               </Typography>
 
-              <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter your details below.</Typography>
+              <Typography sx={{ color: 'text.secondary', mb: 5 }}>Enter product details below.</Typography>
 
               <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={3} sx={{ mb: 4 }}>
-                  <RHFTextField name="Item_name" label="Item name" />
-                  <RHFTextField name="Item_price" label="Item price" />
-                  <Button variant="outlined" component="label">
-                    upload item image
-                    <input hidden accept="image/*" multiple type="file" />
+                  {showError && (
+                    <Collapse in={showError}>
+                      <Alert onClose={() => setShowError(false)} severity="error">
+                        {error}
+                      </Alert>
+                    </Collapse>
+                  )}
+                  <RHFTextField name="name" label="Item name" />
+                  <RHFTextField name="price" label="Item price" />
+                  <RHFTextField name="quantity" label="Quantity" />
+                  <Button
+                    variant={`${image ? 'contained' : 'outlined'}`}
+                    component="label"
+                    startIcon={image && <Iconify icon={'eva:checkmark-circle-2-fill'} />}
+                    color={image ? 'error' : 'info'}
+                  >
+                    {image ? 'Image uploaded' : 'Upload image'}
+                    <input hidden accept="image/*" type="file" onChange={(event) => setImage(event.target.files[0])} />
                   </Button>
                 </Stack>
 
