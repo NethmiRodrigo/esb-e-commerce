@@ -18,11 +18,6 @@ import Page from '../components/Page';
 import Logo from '../components/Logo';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../components/hook-form';
 
-// sections
-import { LoginForm } from '../sections/auth/login';
-
-import AuthSocial from '../sections/auth/AuthSocial';
-
 // ----------------------------------------------------------------------
 
 const RootStyle = styled('div')(({ theme }) => ({
